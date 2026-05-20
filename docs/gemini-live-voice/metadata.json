@@ -1,0 +1,6 @@
+{
+  "name": "Gemini Live Voice Tester",
+  "description": "Real-time, bidirectional voice conversations using Gemini 3.1 Live API.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

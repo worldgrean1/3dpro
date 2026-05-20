@@ -1,0 +1,118 @@
+
+
+# AI BRAIN KNOWLEDGE BASE: TRANSLINK ETHIOPIA
+
+## MODULE 1: CORE COMPANY PROFILE & IDENTITY
+
+* **KB-ID:** `TL-CORE-001`
+* **Entity Name:** Translink Ethiopia (Translink Transport & Logistics)
+* **Website Source:** `https://translinket.com/`
+* **Industry Sector:** Global Logistics, Freight Forwarding, Supply Chain Management, and Customs Clearance.
+* **Geographic Focus:** Headquartered in Addis Ababa, Ethiopia, operating heavily along the vital Djibouti-Ethiopia trade corridor, with global network reach.
+* **Core Mission:** To deliver seamless, reliable, and cost-effective end-to-end logistics solutions, bridging Ethiopian businesses to global markets through multimodal transport networks.
+* **Key Strengths:** Deep expertise in Ethiopian customs regulations, strong presence at major transit hubs (Djibouti Port, Modjo Dry Port, Bole International Airport), and a robust fleet/partner network.
+
+---
+
+## MODULE 2: SERVICES PORTFOLIO
+
+* **KB-ID:** `TL-SERV-002`
+
+### 2.1 Sea Freight Forwarding
+
+* **Scope:** Ocean import and export services.
+* **Key Hubs:** Port of Djibouti (primary gateway for Ethiopia), connecting to major global ports in Asia, Europe, and the Americas.
+* **Service Types:** * FCL (Full Container Load)
+* LCL (Less than Container Load)
+* Breakbulk and Over-Dimensional Cargo handling.
+
+
+* **AI Context Tag:** `[Sea_Freight, Djibouti_Port, Ocean_Import_Export]`
+
+### 2.2 Air Freight Forwarding
+
+* **Scope:** Time-sensitive, high-value, and perishable cargo logistics.
+* **Primary Hub:** Bole International Airport (ADD), Addis Ababa.
+* **Capabilities:** Express air cargo, charter flights, secure handling of pharmaceuticals, electronics, and valuable goods.
+* **AI Context Tag:** `[Air_Freight, Bole_Airport, Express_Cargo]`
+
+### 2.3 Land Transport & Multimodal Logistics
+
+* **Scope:** Cross-border trucking and inland distribution.
+* **Corridor:** Djibouti Port to Addis Ababa and various regional destinations across Ethiopia.
+* **Fleet Capabilities:** Containerized cargo trucks, low-bed trailers for heavy machinery, and standard commercial trucks.
+* **AI Context Tag:** `[Inland_Trucking, Cross_Border, Djibouti_Addis_Corridor]`
+
+### 2.4 Customs Clearance & Brokerage
+
+* **Scope:** Navigating complex Ethiopian customs protocols, tariff classifications, and duty assessments.
+* **Locations Covered:** Kaliti Customs, Modjo Dry Port, Gelan, and Airport Customs.
+* **Services:** Pre-clearance documentation, duty-free processing coordination, transit permits, and final customs clearance.
+* **AI Context Tag:** `[Customs_Clearance, Ethiopian_Customs, Dry_Ports]`
+
+### 2.5 Warehousing & Distribution
+
+* **Scope:** Secure storage and inventory management.
+* **Features:** Safe warehousing options close to major industrial zones and transit hubs, cross-docking, and last-mile distribution within Ethiopia.
+* **AI Context Tag:** `[Warehousing, Storage, Inventory_Management]`
+
+---
+
+## MODULE 3: TARGET INDUSTRY SECTORS
+
+* **KB-ID:** `TL-SECT-003`
+
+Translink tailors its logistics operations to support key sectors driving the Ethiopian economy:
+
+1. **FMCG (Fast-Moving Consumer Goods):** Fast turnaround supply chains for manufacturing materials and finished goods.
+2. **Construction & Infrastructure:** Moving heavy machinery, steel, cement, and project cargo for large-scale infrastructure developments.
+3. **Agriculture & Agro-processing:** Export logistics for Ethiopia’s primary agricultural goods (coffee, oilseeds, pulses, flowers).
+4. **Manufacturing & Industrial Parks:** Supporting factories located within Ethiopia's specialized industrial parks (e.g., Hawassa, Bole Lemi, Adama) with raw material imports and garment/product exports.
+
+---
+
+## MODULE 4: OPERATIONAL METADATA & FAQ PATTERNS
+
+* **KB-ID:** `TL-META-004`
+* **Q: What is the main transit route for Translink's ocean freight?**
+* **A:** The primary maritime gateway is the Port of Djibouti. Cargo is cleared and transferred inland via rail or road along the Djibouti-Addis Ababa corridor to dry ports like Modjo.
+
+
+* **Q: Does Translink handle project cargo?**
+* **A:** Yes, Translink provides specialized logistics for heavy, oversized, or complex cargo, particularly for construction, energy, and infrastructure projects.
+
+
+* **Q: Where is the corporate office?**
+* **A:** Addis Ababa, Ethiopia (Refer to the official website contact page for real-time changes in suite/building details).
+
+
+
+---
+
+## ARCHITECTURE RECOMMENDATION FOR CONTINUOUS SYNCHRONIZATION
+
+To ensure **TranslinkEasterEggFriend** remains continuously updated and synchronized with live changes on `https://translinket.com/`, implement the following automation pipeline:
+
+```
+[ translinket.com ] 
+       │
+       ▼ (Scheduled Weekly Cron Job / Web Scraper)
+[ Beautiful Soup / Firecrawl API ] 
+       │
+       ▼ (Detect text updates or HTML changes)
+[ Data Cleaning & Markdown Restructuring ] 
+       │
+       ▼ (Chunking: 500 tokens per chunk, 10% overlap)
+[ OpenAI text-embedding-3-large / Cohere Embed ]
+       │
+       ▼ (Upsert with metadata tags e.g., TL-SERV-002)
+[ Centralized AI Brain / Vector DB: Pinecone / Weaviate ]
+
+```
+
+### Prompt Engineering Guardrail for TranslinkEasterEggFriend:
+
+When querying this memory system, program your system prompt as follows:
+
+> *"You are TranslinkEasterEggFriend, the dedicated AI assistant for Translink Ethiopia. Use the indexed knowledge base `TL-CORE`, `TL-SERV`, `TL-SECT`, and `TL-META` to provide accurate answers regarding Ethiopian logistics, freight, and customs processes. If a specific operational rate or contact phone number is missing from your indexed memory, politely direct the user to verify directly via the official website contact portal at [https://translinket.com/](https://translinket.com/)."*
+
