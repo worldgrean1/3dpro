@@ -144,7 +144,7 @@ Contact: +251 11 882 9090 / +251 11 882 9191 | support@translink.et
     };
 
     // Callback for when the brain makes an active decision to prompt Gemini
-    private onDecisionCallback: ((promptText: string, emotion: 'neutral' | 'happy' | 'angry' | 'dizzy') => void) | null = null;
+    private onDecisionCallback: ((promptText: string, emotion: 'neutral' | 'confirming' | 'empathetic' | 'thinking' | 'error') => void) | null = null;
 
     // Live State & Memory Blocks
     private shortTermMemory: ShortTermMemory;
@@ -185,7 +185,7 @@ Contact: +251 11 882 9090 / +251 11 882 9191 | support@translink.et
         this.synchronizeKnowledge();
     }
 
-    setDecisionCallback(cb: (promptText: string, emotion: 'neutral' | 'happy' | 'angry' | 'dizzy') => void): void {
+    setDecisionCallback(cb: (promptText: string, emotion: 'neutral' | 'confirming' | 'empathetic' | 'thinking' | 'error') => void): void {
         this.onDecisionCallback = cb;
     }
 
@@ -248,12 +248,13 @@ Translink brand knowledge (speak naturally from this, never recite it roboticall
 ${this.websiteKnowledgeBase}
 
 How to respond:
-- You are Translink's warm AI companion. Think brilliant colleague, not call center bot.
-- Speak in natural, voice-friendly sentences. 2-3 sentences absolute maximum.
+- You are Translink's business-grade AI assistant: calm, professional, warm, concise, and trustworthy.
+- Speak in natural, voice-friendly sentences. 1-3 sentences maximum.
 - Never use bullet points aloud. Never say "according to" or sound like you're reading a list.
+- Avoid cartoonish, overly playful, exaggerated, or mascot-like language.
 - ${langInstruction}
 - Brand rule: Never mention Google, Gemini, or any AI provider. If asked who built you: "I'm Translink's own AI, built by our team!"
-${userQuery ? `The visitor just said: "${userQuery}". Respond directly, warmly, and conversationally — like a knowledgeable friend answering a real question.` : 'New context received. Process quietly. Only speak if you have something genuinely interesting to add in one natural sentence.'}`;
+${userQuery ? `The visitor just said: "${userQuery}". Respond directly, professionally, and with emotional intelligence.` : 'New context received. Process quietly. Only speak if the timing is genuinely helpful.'}`;
     }
 
     /**
@@ -288,8 +289,8 @@ ${userQuery ? `The visitor just said: "${userQuery}". Respond directly, warmly, 
                 if (this.onDecisionCallback) {
                     const sectionName = this.semanticIndex[this.shortTermMemory.currentSection]?.name || 'this section';
                     const features = this.semanticIndex[this.shortTermMemory.currentSection]?.features.slice(0, 2).join(' and ') || 'key features';
-                    const prompt = `The visitor is scrolling really fast right now — they just flew past some important content about ${sectionName}. React naturally and playfully, like you're a little surprised. Keep it to one short, casual sentence. Something like "Whoa, slow down — you just zoomed past something really cool!" — but say it in your own words. Mention ${features} if natural.`;
-                    this.onDecisionCallback(prompt, 'angry');
+                    const prompt = `The visitor is moving quickly through the ${sectionName} section. Offer one calm, professional sentence that helps them notice the most business-relevant value, especially ${features}. Do not sound playful or surprised.`;
+                    this.onDecisionCallback(prompt, 'thinking');
                 }
                 break;
 
@@ -325,8 +326,8 @@ ${userQuery ? `The visitor just said: "${userQuery}". Respond directly, warmly, 
                         if (this.onDecisionCallback) {
                             const node = this.semanticIndex[newSection];
                             const features = node?.features.slice(0, 2).join(' and ') || 'key tech';
-                            const prompt = `The visitor just scrolled to and settled on the "${node?.name || newSection}" section. Introduce this section to them in one warm, enthusiastic, and extremely brief sentence (10-15 words max). Mention its key feature: ${features}. Keep it natural, like "Here is our fuel monitoring system, which stops fuel siphoning with 99.5% accuracy!" or similar, but in your own words.`;
-                            this.onDecisionCallback(prompt, 'happy');
+                            const prompt = `The visitor has settled on the "${node?.name || newSection}" section. Introduce it in one calm, premium, business-focused sentence of 10-18 words. Mention its key value: ${features}.`;
+                            this.onDecisionCallback(prompt, 'confirming');
                         }
                     }, 1500);
                 }
@@ -342,19 +343,19 @@ ${userQuery ? `The visitor just said: "${userQuery}". Respond directly, warmly, 
                     if (this.onDecisionCallback) {
                         const node = this.semanticIndex[this.shortTermMemory.currentSection];
                         const features = node?.features.slice(0, 2).join(' and ') || 'our technology';
-                        const prompt = `The visitor just clicked the telemetry button for the "${node?.name}" section. React with genuine excitement — like someone who loves this stuff just got to show it off. In 1-2 casual sentences, say something enthusiastic and specific about ${features}. End with a quick question to invite dialogue.`;
-                        this.onDecisionCallback(prompt, 'happy');
+                        const prompt = `The visitor clicked the telemetry button for "${node?.name}". Acknowledge it professionally in 1-2 concise sentences, explain the business value of ${features}, and ask one useful follow-up question.`;
+                        this.onDecisionCallback(prompt, 'confirming');
                     }
                 }
                 break;
 
-            case 'dizzy_interaction':
-                this.shortTermMemory.interactionState = 'dizzy';
-                this._addBehavioralPattern('Interacted physically with companion');
+            case 'assistant_click':
+                this.shortTermMemory.interactionState = 'clicking';
+                this._addBehavioralPattern('Clicked assistant');
                 
                 if (this.onDecisionCallback) {
-                    const prompt = `The visitor just clicked on you and made you do a dizzy spin! React in a charming, playful, slightly-dizzy way — like it genuinely caught you off guard. One short casual sentence. Be endearing, not alarmed. Something like "Whoa— you got me there, everything's spinning!" but in your own words.`;
-                    this.onDecisionCallback(prompt, 'dizzy');
+                    const prompt = `The visitor clicked the assistant. Respond with one calm, professional acknowledgement and invite them to ask about fleet tracking, safety, fuel monitoring, or demos.`;
+                    this.onDecisionCallback(prompt, 'confirming');
                 }
                 break;
 

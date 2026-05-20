@@ -6,6 +6,8 @@ import { TranslinkAIBrain } from './TranslinkAIBrain';
 
 gsap.registerPlugin(MotionPathPlugin);
 
+type BusinessExpression = 'neutral' | 'confirming' | 'empathetic' | 'thinking' | 'error';
+
 /* ── Procedural animation CSS injected once ─────────────────────────────── */
 const PROC_CSS = `
 #tl-companion {
@@ -387,22 +389,21 @@ html[dir="rtl"] #tl-companion {
   height: 50px;
 }
 
-/* --- ALERT STATE --- */
+/* --- ERROR / CLARIFICATION STATE --- */
 #tl-companion.state-alert .robot-head {
-  background: var(--brand-crimson) !important;
-  animation: rapidShake 0.15s infinite;
+  background: linear-gradient(135deg, #d8dde5, #f4f7fa) !important;
+  animation: attentivePause 1.8s infinite ease-in-out;
 }
 
 #tl-companion.state-alert .robot-eye {
-  background: #ff0000;
-  box-shadow: 0 0 20px #ff0000;
-  transform: scaleY(0.4);
+  background: #ffb84d;
+  box-shadow: 0 0 10px rgba(255, 184, 77, 0.65);
+  transform: scaleY(0.72);
 }
 
-@keyframes rapidShake {
+@keyframes attentivePause {
   0%, 100% { transform: rotateY(0) translateZ(5px); }
-  25% { transform: rotateY(15deg) translateZ(5px); }
-  75% { transform: rotateY(-15deg) translateZ(5px); }
+  50% { transform: rotateY(4deg) translateZ(5px); }
 }
 
 /* --- GUIDING STATE --- */
@@ -460,8 +461,8 @@ html[dir="rtl"] #tl-companion.state-guiding .robot-hand.l {
 
 /* --- LISTENING STATE --- */
 #tl-companion.state-listening .robot-emblem {
-  box-shadow: 0 0 20px var(--brand-crimson), 0 0 40px var(--brand-crimson);
-  animation: emblemPulse 1.2s infinite ease-in-out alternate;
+  box-shadow: 0 0 14px var(--brand-crimson), 0 0 24px rgba(192, 32, 47, 0.45);
+  animation: emblemPulse 1.8s infinite ease-in-out alternate;
 }
 
 #tl-companion.state-listening .earcup {
@@ -475,13 +476,13 @@ html[dir="rtl"] #tl-companion.state-guiding .robot-hand.l {
 }
 
 @keyframes emblemPulse {
-  0% { box-shadow: 0 0 10px var(--brand-crimson); }
-  100% { box-shadow: 0 0 35px var(--brand-crimson), 0 0 55px var(--brand-crimson); }
+  0% { box-shadow: 0 0 8px rgba(192, 32, 47, 0.75); }
+  100% { box-shadow: 0 0 22px rgba(192, 32, 47, 0.85), 0 0 34px rgba(0, 210, 255, 0.16); }
 }
 
 /* --- SPEAKING STATE --- */
 #tl-companion.state-speaking .robot-emblem {
-  animation: speakPulse 0.15s infinite alternate !important;
+  animation: speakPulse 0.38s infinite alternate !important;
 }
 
 @keyframes speakPulse {
@@ -490,8 +491,8 @@ html[dir="rtl"] #tl-companion.state-guiding .robot-hand.l {
     box-shadow: 0 0 8px var(--brand-crimson);
   }
   100% {
-    transform: scale(1.18) translateZ(3px);
-    box-shadow: 0 0 35px var(--brand-crimson), 0 0 50px var(--brand-crimson);
+    transform: scale(1.08) translateZ(3px);
+    box-shadow: 0 0 20px var(--brand-crimson), 0 0 28px rgba(192, 32, 47, 0.5);
   }
 }
 
@@ -508,66 +509,56 @@ html[dir="rtl"] #tl-companion.state-guiding .robot-hand.l {
     box-shadow: 0 0 12px var(--brand-crimson), 0 0 24px rgba(255, 0, 85, 0.4);
   }
   50% {
-    transform: scale(1.35) translateZ(5px);
-    box-shadow: 0 0 30px var(--brand-crimson), 0 0 60px rgba(255, 0, 85, 0.6), 0 0 90px rgba(0, 210, 255, 0.25);
+    transform: scale(1.16) translateZ(5px);
+    box-shadow: 0 0 22px var(--brand-crimson), 0 0 42px rgba(255, 0, 85, 0.42), 0 0 54px rgba(0, 210, 255, 0.16);
   }
 }
 
-/* --- TOP SPEECH CARD ENABLED --- */
-#tl-companion.state-excited .robot-floating-wrapper {
-  animation: excitedWobble 0.4s infinite ease-in-out !important;
-}
-
-@keyframes excitedWobble {
+@keyframes professionalAttention {
   0%, 100% {
     transform: translateY(0) rotate(0deg) scale(1);
   }
-  25% {
-    transform: translateY(-8px) rotate(6deg) scale(1.08);
-  }
-  75% {
-    transform: translateY(-4px) rotate(-6deg) scale(1.08);
+  50% {
+    transform: translateY(-4px) rotate(0.75deg) scale(1.01);
   }
 }
 
 /* ========================================== */
 /*   EMOTION MATRIX OVERRIDES                 */
 /* ========================================== */
-#tl-companion.exp-angry .robot-eye {
-  transform: skewY(-15deg) scaleY(0.7);
-  background: #ff0055;
-  box-shadow: 0 0 10px #ff0055;
+#tl-companion.exp-error .robot-eye {
+  transform: scaleY(0.72);
+  background: #ffb84d;
+  box-shadow: 0 0 10px rgba(255, 184, 77, 0.65);
 }
 
-#tl-companion.exp-happy .robot-eye {
-  border-radius: 50% 50% 0 0;
-  transform: scale(1.2);
-  background: #c8ff2e;
-  box-shadow: 0 0 10px #c8ff2e;
+#tl-companion.exp-confirming .robot-eye {
+  border-radius: 8px;
+  transform: scale(1.05);
+  background: var(--brand-cyan);
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
 }
 
-#tl-companion.exp-dizzy .robot-eye {
-  transform: scale(1.3);
-  background: #ffbb00;
-  box-shadow: 0 0 10px #ffbb00;
-  animation: dizzySpin 1s infinite linear;
+#tl-companion.exp-empathetic .robot-eye {
+  transform: scaleY(0.86);
+  background: #9be7ff;
+  box-shadow: 0 0 10px rgba(155, 231, 255, 0.6);
 }
 
-@keyframes dizzySpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+#tl-companion.exp-thinking .robot-eye {
+  transform: scaleY(0.78);
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.55);
 }
 
-/* --- KINETIC CLICK POP EFFECT --- */
+/* --- CALM CLICK ACKNOWLEDGEMENT --- */
 #tl-companion.popping {
-  animation: tl-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: tl-pop 0.45s ease-out;
 }
 
 @keyframes tl-pop {
   0% { transform: scale(1); }
-  20% { transform: scale(0.8) translateY(10px); }
-  50% { transform: scale(1.2) translateY(-15px); }
-  80% { transform: scale(0.95) translateY(2px); }
+  45% { transform: scale(1.04) translateY(-3px); }
   100% { transform: scale(1); }
 }
 
@@ -619,7 +610,7 @@ export class TranslinkEasterEggFriend {
 
     /* Interactive variables */
     private audioCtx: AudioContext | null = null;
-    private isDizzy = false;
+    private isAcknowledgingClick = false;
     private isHoldingNotepad = false;
     private scrollTimer: ReturnType<typeof setTimeout> | null = null;
     private scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
@@ -628,7 +619,7 @@ export class TranslinkEasterEggFriend {
     private handleScroll: (() => void) | null = null;
     private facing = 1;
     private currentFacing = 1;
-    private activeExpression: 'neutral' | 'happy' | 'angry' | 'dizzy' = 'neutral';
+    private activeExpression: BusinessExpression = 'neutral';
 
     /* Voice link variables */
     private voiceManager: TranslinkVoiceManager | null = null;
@@ -644,7 +635,7 @@ export class TranslinkEasterEggFriend {
     private _robotHasSpoken = false;
     private _isAutomatedSession = false;
     private _pendingAutomatedPrompt: string | null = null;
-    private _pendingAutomatedExpression: 'neutral' | 'happy' | 'angry' | 'dizzy' = 'neutral';
+    private _pendingAutomatedExpression: BusinessExpression = 'neutral';
     private _pendingChatGreeting = false;
 
     private constructor() {}
@@ -692,7 +683,7 @@ export class TranslinkEasterEggFriend {
             willChange: 'transform',
         });
 
-        // Absolutely positioned next to her pointing hand (right arm in LTR, left arm in RTL)
+        // Absolutely positioned next to the pointing hand (right arm in LTR, left arm in RTL)
         this.buttonSlot = document.createElement('div');
         Object.assign(this.buttonSlot.style, {
             position: 'absolute',
@@ -703,7 +694,7 @@ export class TranslinkEasterEggFriend {
             pointerEvents: 'auto',
             opacity: '0',
             transform: isAr
-                ? 'scale(0) translate3d(130px, 50px, -50px) rotate(30deg)' // Tucked behind her back initially (mirrored)
+                ? 'scale(0) translate3d(130px, 50px, -50px) rotate(30deg)' // Tucked behind the assistant initially (mirrored)
                 : 'scale(0) translate3d(-130px, 50px, -50px) rotate(-30deg)',
             filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
             zIndex: '5',
@@ -847,7 +838,7 @@ export class TranslinkEasterEggFriend {
         if (!this._hasWelcomedThisSession()) {
             this._playWelcomeSequence();
         } else {
-            // Already welcomed this session! Keep her happily floating at home corner without triggering flight or connecting automatically.
+            // Already welcomed this session. Keep the assistant calmly available without auto-connecting.
             this.welcomeCompleted = true;
             this.welcomeGuideDelivered = true;
             this.state = State.IDLE;
@@ -871,13 +862,13 @@ export class TranslinkEasterEggFriend {
 
         this._killFlight();
         this.state = State.FLYING;
-        this._updateStateClasses('flying', 'happy');
+        this._updateStateClasses('flying', 'confirming');
 
         // Calculate flight targets before reparenting the button to prevent container collapse
         const shellRect = this.shell.getBoundingClientRect();
         const parentRect = btn.parentElement?.getBoundingClientRect();
 
-        // Reparent button into robot slot (tucked behind her back initially)
+        // Reparent button into robot slot (tucked behind the assistant initially)
         this.carriedBtn = btn;
         this.btnParent = btn.parentElement;
         this.btnSibling = btn.nextSibling;
@@ -888,7 +879,7 @@ export class TranslinkEasterEggFriend {
         btn.style.pointerEvents = 'auto';
 
         const isAr = TranslinkLanguageController.getInstance().getLanguage() === 'ar';
-        // Keep button completely hidden and tucked behind her back during flight
+        // Keep button completely hidden and tucked behind the assistant during flight
         gsap.set(this.buttonSlot, {
             opacity: 0,
             scale: 0,
@@ -937,7 +928,7 @@ export class TranslinkEasterEggFriend {
             onUpdate: () => this._applyProceduralTilt(),
             onComplete: () => {
                 this.state = State.PRESENTING;
-                this._updateStateClasses('guiding', 'happy');
+                this._updateStateClasses('guiding', 'confirming');
 
                 // Reset body speed tilts
                 gsap.to(this.tiltWrap, { rotation: 0, duration: 0.4, ease: 'power2.out' });
@@ -1106,7 +1097,7 @@ export class TranslinkEasterEggFriend {
                 duration: 0.85,
                 ease: 'elastic.out(1, 0.65)',
                 onStart: () => {
-                    // Play charming presenting sound
+                    // Play restrained presenting cue
                     this._playSynthBeep(600, 'sine', 0.15);
                     setTimeout(() => this._playSynthBeep(850, 'sine', 0.25), 80);
                 },
@@ -1187,7 +1178,7 @@ export class TranslinkEasterEggFriend {
                             if (activeHand && this.state === State.PRESENTING) {
                                 gsap.set(activeHand, { clearProps: 'all' });
                                 // Revert body state class back to idle to allow the arm CSS animations to rest naturally
-                                this._updateStateClasses('idle', 'happy');
+                                this._updateStateClasses('idle', 'confirming');
                             }
                         }
                     });
@@ -1452,7 +1443,7 @@ export class TranslinkEasterEggFriend {
         this.prevY = cy;
     }
 
-    private _updateStateClasses(stateClass: string, expClass = 'neutral'): void {
+    private _updateStateClasses(stateClass: string, expClass: BusinessExpression = 'neutral'): void {
         if (!this.shell) return;
 
         const classesToRemove: string[] = [];
@@ -1470,25 +1461,23 @@ export class TranslinkEasterEggFriend {
         }
     }
 
-    setExpression(expr: 'neutral' | 'happy' | 'angry' | 'dizzy'): void {
+    setExpression(expr: BusinessExpression): void {
         if (!this.shell) return;
         this.activeExpression = expr;
 
         // Remove existing expressions
-        this.shell.classList.remove('exp-happy', 'exp-angry', 'exp-dizzy');
+        this.shell.classList.remove('exp-confirming', 'exp-empathetic', 'exp-thinking', 'exp-error');
 
         if (expr !== 'neutral') {
             this.shell.classList.add(`exp-${expr}`);
         }
 
-        // Play procedural synths from Final.html
-        if (expr === 'happy') {
-            this._playSynthBeep(600, 'sine', 0.15);
-        } else if (expr === 'angry') {
-            this._playSynthBeep(150, 'sawtooth', 0.25);
-        } else if (expr === 'dizzy') {
-            this._playSynthBeep(300, 'square', 0.1);
-            setTimeout(() => this._playSynthBeep(450, 'square', 0.1), 100);
+        if (expr === 'confirming') {
+            this._playSynthBeep(520, 'sine', 0.08);
+        } else if (expr === 'error') {
+            this._playSynthBeep(220, 'triangle', 0.12);
+        } else if (expr === 'thinking') {
+            this._playSynthBeep(360, 'sine', 0.06);
         }
     }
 
@@ -1701,56 +1690,33 @@ export class TranslinkEasterEggFriend {
     private _initClickInteraction(): void {
         this.creatureEl?.addEventListener('click', () => {
             if (window.innerWidth <= 1024) return;
-            if (this.isDizzy || !this.shell || !this.floater || !this.creatureEl) return;
-            this.isDizzy = true;
+            if (this.isAcknowledgingClick || !this.shell || !this.floater || !this.creatureEl) return;
+            this.isAcknowledgingClick = true;
 
             const prevExpr = this.activeExpression;
-            this.setExpression('dizzy');
+            this.setExpression('confirming');
             this.creatureEl.classList.add('popping');
 
-            // Trigger dizzy decision to brain
             if (this.brain) {
-                this.brain.makeDecision('dizzy_interaction');
+                this.brain.makeDecision('assistant_click');
             }
 
-            // Apply a gorgeous premium GSAP kinetic jump and squash timeline
-            const dizzyTl = gsap.timeline({
+            const acknowledgeTl = gsap.timeline({
                 onComplete: () => {
                     this.creatureEl?.classList.remove('popping');
-                    this.isDizzy = false;
+                    this.isAcknowledgingClick = false;
                     this.setExpression(prevExpr);
                 },
             });
 
-            // squash down -> spring up -> full 3D flip -> landing squash -> return to normal
-            dizzyTl
+            acknowledgeTl
                 .to(this.floater, {
-                    y: 10,
-                    scaleX: 1.15,
-                    scaleY: 0.85,
-                    duration: 0.1,
-                    ease: 'power1.inOut',
-                })
-                .to(this.floater, {
-                    y: -45,
-                    scaleX: 0.85,
-                    scaleY: 1.25,
-                    duration: 0.25,
+                    y: -5,
+                    rotation: 1.2,
+                    duration: 0.18,
                     ease: 'power2.out',
                 })
-                .to(
-                    this.creatureEl,
-                    { rotationZ: '+=15', skewX: '+=10', duration: 0.15, yoyo: true, repeat: 3, ease: 'sine.inOut' },
-                    '-=0.15'
-                )
-                .to(this.floater, {
-                    y: 0,
-                    scaleX: 1.2,
-                    scaleY: 0.8,
-                    duration: 0.2,
-                    ease: 'power1.in',
-                })
-                .to(this.floater, { scaleX: 1, scaleY: 1, duration: 0.15, ease: 'back.out(2)' });
+                .to(this.floater, { y: 0, rotation: 0, duration: 0.28, ease: 'power2.inOut' });
         });
     }
 
@@ -1819,9 +1785,9 @@ export class TranslinkEasterEggFriend {
             delay: 1.0, // wait 1 second after page load for maximum visual impact
             onStart: () => {
                 this.state = State.FLYING;
-                this._updateStateClasses('flying', 'happy');
-                this.setExpression('happy');
-                // Play a gorgeous digital tri-tone welcome melody
+                this._updateStateClasses('flying', 'confirming');
+                this.setExpression('confirming');
+                // Play a restrained digital tri-tone welcome cue
                 this._playSynthBeep(523.25, 'sine', 0.15); // C5
                 setTimeout(() => this._playSynthBeep(659.25, 'sine', 0.15), 100); // E5
                 setTimeout(() => this._playSynthBeep(783.99, 'sine', 0.25), 200); // G5
@@ -1866,7 +1832,7 @@ export class TranslinkEasterEggFriend {
             onUpdate: () => this._applyProceduralTilt(),
             onComplete: () => {
                 this.state = State.PRESENTING;
-                this._updateStateClasses('guiding', 'happy');
+                this._updateStateClasses('guiding', 'confirming');
 
                 // Settle and reset body velocity tilts smoothly
                 gsap.to(this.tiltWrap, { rotation: 0, duration: 0.4, ease: 'power2.out' });
@@ -1887,7 +1853,7 @@ export class TranslinkEasterEggFriend {
 
                 this.welcomeCompleted = false;
 
-                // Build a gorgeous glassmorphic welcome notepad card
+                // Build a polished glassmorphic welcome notepad card
                 const lang = TranslinkLanguageController.getInstance();
                 const curLang = lang.getLanguage();
                 let headerText = "TRANSLINK SOLUTIONS";
@@ -1973,8 +1939,8 @@ export class TranslinkEasterEggFriend {
                 // because we are sending the prompt text ourselves via sendText().
                 // Passing welcome=true would cause the SERVER to also fire its own welcome prompt, doubling it.
                 this._autoConnectAndPrompt(
-                    `Welcome the visitor warmly. In your greeting, clearly say that Translink is the ONE STOP SOLUTION for fleet telematics, GPS tracking, fuel management, and AI-driven safety across East Africa. Emphasize "One Stop Solution" — say it with pride and energy, like it's our tagline. Keep it to 2 short, natural sentences. Sound genuinely excited, like a colleague who loves what we do. Invite them to ask anything.`,
-                    "happy"
+                    `Welcome the visitor warmly. In your greeting, clearly say that Translink is the ONE STOP SOLUTION for fleet telematics, GPS tracking, fuel management, and AI-driven safety across East Africa. Keep it to 2 short, natural sentences. Sound calm, premium, professional, and helpful. Invite them to ask a fleet-related question.`,
+                    "confirming"
                 );
             }
         }, '-=0.2');
@@ -2085,7 +2051,7 @@ export class TranslinkEasterEggFriend {
         this._killFlight();
         this._stopFloat();
 
-        this._updateStateClasses('flying', 'happy');
+        this._updateStateClasses('flying', 'confirming');
         this._playSynthBeep(350, 'sine', 0.3);
 
         const startX = gsap.getProperty(this.mover, 'x') as number;
@@ -2157,7 +2123,7 @@ export class TranslinkEasterEggFriend {
 
         this._killFlight();
         this._stopFloat();
-        this._updateStateClasses('flying', 'happy');
+        this._updateStateClasses('flying', 'confirming');
         this._playSynthBeep(450, 'sine', 0.2);
 
         const startX = gsap.getProperty(this.mover, 'x') as number;
@@ -2256,7 +2222,7 @@ export class TranslinkEasterEggFriend {
 
             case 'listening':
                 this._stopLipSync();
-                this._updateStateClasses('listening', 'happy');
+                this._updateStateClasses('listening', 'neutral');
 
                 // Welcome-complete guard: only fires AFTER _robotHasSpoken is true.
                 // _robotHasSpoken is set when the first 'speaking' state fires.
@@ -2278,9 +2244,9 @@ export class TranslinkEasterEggFriend {
                         setTimeout(() => {
                             if (this.voiceManager && this.voiceManager.isConnected()) {
                                 this.voiceManager.sendText(
-                                    `Now gently tell the visitor: to start talking with you, they just need to click the glowing red Translink logo on your body. Say it naturally and warmly in one short sentence — like "Just tap my red Translink logo right here on my chest, and we can start chatting!" Use your own words, be charming and inviting.`
+                                    `Now gently tell the visitor: to start talking with you, they just need to click the glowing red Translink logo on your body. Say it in one calm, professional sentence.`
                                 );
-                                this.setExpression('happy');
+                                this.setExpression('confirming');
                             }
                         }, 800);
                     } else if (this.welcomeGuideDelivered && this.welcomeCompleted && this._robotHasSpoken) {
@@ -2299,7 +2265,7 @@ export class TranslinkEasterEggFriend {
                 // This is the gate that unlocks the welcome-complete logic above.
                 this._robotHasSpoken = true;
                 this._startLipSync();
-                this._updateStateClasses('speaking', 'happy');
+                this._updateStateClasses('speaking', 'confirming');
                 break;
 
             case 'idle':
@@ -2320,8 +2286,8 @@ export class TranslinkEasterEggFriend {
 
     private _handleVoiceError(error: string): void {
         console.error('[Companion] Voice session error:', error);
-        this._updateStateClasses('alert', 'angry');
-        this._playSynthBeep(100, 'sawtooth', 0.35);
+        this._updateStateClasses('alert', 'error');
+        this._playSynthBeep(180, 'triangle', 0.18);
 
         setTimeout(() => {
             this._updateStateClasses('idle', 'neutral');
@@ -2349,9 +2315,9 @@ export class TranslinkEasterEggFriend {
                 
                 // Dynamically change mouth color based on active expression
                 let mouthColor = '#00d2ff'; // brand-cyan
-                if (this.activeExpression === 'angry') mouthColor = '#ff0055';
-                else if (this.activeExpression === 'happy') mouthColor = '#c8ff2e';
-                else if (this.activeExpression === 'dizzy') mouthColor = '#ffbb00';
+                if (this.activeExpression === 'error') mouthColor = '#ffb84d';
+                else if (this.activeExpression === 'confirming') mouthColor = '#00d2ff';
+                else if (this.activeExpression === 'empathetic') mouthColor = '#9be7ff';
                 
                 this.mouthEl!.style.background = mouthColor;
                 this.mouthEl!.style.boxShadow = `0 0 ${8 + volume * 15}px ${mouthColor}`;
@@ -2367,7 +2333,7 @@ export class TranslinkEasterEggFriend {
                 if (emblem) {
                     emblem.style.transform = `translateZ(3px) scale(${1 + volume * 0.35})`;
                     let emblemGlow = 'var(--brand-crimson)';
-                    if (this.activeExpression === 'happy') emblemGlow = '#c8ff2e';
+                    if (this.activeExpression === 'confirming') emblemGlow = 'var(--brand-cyan)';
                     emblem.style.boxShadow = `0 0 ${12 + volume * 40}px ${emblemGlow}`;
                 }
 
@@ -2408,9 +2374,9 @@ export class TranslinkEasterEggFriend {
         if (this._pendingChatGreeting) {
             this._pendingChatGreeting = false;
             this.voiceManager.sendText(
-                `The visitor has just clicked to start a conversation with you. Greet them naturally and warmly — like picking up where you left off. Ask if there's anything specific you can help them with today. Keep it to one friendly, conversational sentence. Don't re-introduce yourself or re-play the welcome.`
+                `The visitor has just clicked to start a conversation with you. Greet them in one calm, professional, warm sentence. Ask what fleet operation, safety, fuel, or tracking question you can help with. Do not re-introduce yourself or replay the welcome.`
             );
-            this.setExpression('happy');
+            this.setExpression('confirming');
             this._playSynthBeep(440, 'sine', 0.15);
         } else if (this._pendingAutomatedPrompt) {
             const prompt = this._pendingAutomatedPrompt;
@@ -2422,7 +2388,7 @@ export class TranslinkEasterEggFriend {
         }
     }
 
-    private _autoConnectAndPrompt(promptText: string, emotion: 'neutral' | 'happy' | 'angry' | 'dizzy'): void {
+    private _autoConnectAndPrompt(promptText: string, emotion: BusinessExpression): void {
         const voiceManager = this._ensureVoiceManager();
         this.setExpression(emotion);
 
